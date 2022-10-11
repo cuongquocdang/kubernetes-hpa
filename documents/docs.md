@@ -38,15 +38,29 @@ minikube kubectl -- get pods
 minikube kubectl -- create -f service.yaml
 ```
 
+### create hpa
+```
+minikube addons enable metrics-server
+minikube kubectl -- create -f hpa.yaml
+```
+
 ### testing
 ```
 minikube kubectl -- create -f curl-pod.yaml
 minikube kubectl -- exec --stdin --tty my-curl -- /bin/sh
 curl --location --request GET 'http://app-dev.default/v1/simulators'
 {"message":"Simulated!"}
+while true; do curl http://app-dev.default/v1/simulators; done
+```
+
+### watching hpa
+```
+minikube kubectl -- get hpa -w
 ```
 
 ### take note
 ```
 minikube kubectl -- delete deployment app-dev
+minikube kubectl -- delete service app-dev
+minikube kubectl -- delete hpa app-dev
 ```
